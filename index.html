@@ -12,11 +12,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
 /* Layout: faixa de cabeçalho anil, resumo em linha, abas; a grade é uma folha de ponto com coluna de nomes fixa */
 :root{
-  --bg:#f4f4f4;--surface:#ffffff;--ink:#1c1c1e;--muted:#64646a;--line:#e2e2e4;--line-strong:#c4c4c8;
+  --bg:#ffffff;--surface:#ffffff;--ink:#1c1c1e;--muted:#6b6b72;--line:#efeff1;--line-strong:#dcdce0;
   --anil:#23409e;--anil-ink:#ffffff;--anil-soft:#e2e8f8;
   --ochre:#9a6410;--ochre-soft:#fbeed6;
   --red:#b9302a;--red-soft:#fbe1de;--orange:#b85a0c;--orange-soft:#fde6cf;
-  --ok:#2f7a4a;--closed:#ededee;--hatch:#dcdcdf;
+  --ok:#2f7a4a;--closed:#f5f5f6;--hatch:#e9e9eb;
   --f-display:"Familjen Grotesk","Helvetica Neue",Arial,sans-serif;
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -122,9 +122,9 @@ th.hh{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);padding:0 6p
 .grid tbody tr:hover td.nm{color:var(--anil)}
 .grid tr.grp td{background:var(--bg);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 10px;height:24px}
 .grid tr.grp td.nm{background:var(--bg)}
-.grid tfoot td{font-family:var(--f-mono);font-size:11.5px;background:var(--bg)}
-.grid tfoot td.nm,.grid tfoot td.fn{background:var(--bg);font-family:var(--f-body);font-size:12px}
-.grid tfoot tr:first-child td{border-top:2px solid var(--line-strong)}
+.grid tfoot td{font-family:var(--f-mono);font-size:11.5px;background:var(--closed)}
+.grid tfoot td.nm,.grid tfoot td.fn{background:var(--closed);font-family:var(--f-body);font-size:12px}
+.grid tfoot tr:first-child td{border-top:1px solid var(--line-strong)}
 .grid tfoot td.warn{background:var(--orange-soft);color:var(--orange);font-weight:600}
 .grid tfoot td.low{color:var(--red);font-weight:600}
 /* alertas */
@@ -313,6 +313,7 @@ function idxF(f){ var i = FUNCOES.indexOf(f); return i < 0 ? 99 : i; }
 /* ---------- render ---------- */
 var M;
 function render(){
+  if (STANDALONE && ui.editing && dirty()) saveLocal();
   M = compute(); cacheM = {};
   document.getElementById("periodo").textContent = ddmmyyyy(M.start) + " a " + ddmmyyyy(M.end) + " · Turno " + state.turno.codigo + " " + state.turno.entrada + "–" + state.turno.saida + " · segunda fechado";
   renderHeader(); renderFolgasHoje(); renderSummary(); renderTabs();
@@ -388,7 +389,7 @@ function renderEscala(){
   var rows = M.rows.filter(function(r){ return !ui.filtro || r.p.funcao === ui.filtro; });
   var opts = '<option value="">Todas as funções</option>' + M.funcs.map(function(f){ return '<option' + (ui.filtro === f ? " selected" : "") + '>' + esc(f) + '</option>'; }).join("");
   var h = '';
-  if (ui.editing) h += '<div class="editnote">Toque numa célula para trocar entre <b>' + esc(state.turno.codigo) + '</b> e <b>F</b> (atestado, troca entre colegas). O ponto no canto marca uma troca manual; tocar de novo volta ao rodízio. As alterações só valem depois de <b>' + (STANDALONE ? "Salvar neste navegador" : "Salvar escala") + '</b>.' + (STANDALONE ? ' Elas ficam só neste navegador; para atualizar o site no GitHub, use <b>Baixar index.html</b> e envie o arquivo para o repositório.' : '') + '</div>';
+  if (ui.editing) h += '<div class="editnote">Toque numa célula para trocar entre <b>' + esc(state.turno.codigo) + '</b> e <b>F</b> (atestado, troca entre colegas). O ponto no canto marca uma troca manual; tocar de novo volta ao rodízio. ' + (STANDALONE ? 'Cada alteração é salva automaticamente neste navegador. Para atualizar o site para todos, use <b>Baixar index.html</b> e envie o arquivo para o repositório.' : 'As alterações só valem depois de <b>Salvar escala</b>.') + '</div>';
   h += '<div class="toolbar"><label for="filtroFn">Função <select id="filtroFn">' + opts + '</select></label>' +
        '<div class="legend"><span><i class="sw" style="background:var(--surface)"></i>' + esc(state.turno.codigo) + ' trabalha</span><span><i class="sw" style="background:var(--anil-soft)"></i>F folga</span>' +
        '<span><i class="sw" style="background:repeating-linear-gradient(135deg,var(--closed) 0 4px,var(--hatch) 4px 6px)"></i>Segunda fechado</span>' +
@@ -535,6 +536,11 @@ function renderSavebar(){
   if (!ui.editing){ b.hidden = true; document.body.style.paddingBottom = ""; return; }
   var dd = dirty();
   b.hidden = false; document.body.style.paddingBottom = "64px";
+  if (STANDALONE){
+    b.innerHTML = '<div class="wrap"><span>' + (ui.saveFail ? "Este navegador não deixou salvar. Use Baixar index.html para não perder as alterações." : (ui.local ? "Alterações salvas automaticamente neste navegador às " + esc(fmtHora(ui.local)) + "." : "Cada alteração é salva automaticamente neste navegador.")) + '</span>' +
+      '<span style="display:flex;gap:8px"><button class="btn primary" id="btnSair">Concluir edição</button></span></div>';
+    return;
+  }
   b.innerHTML = '<div class="wrap"><span>' + (ui.saving ? "Salvando…" : (dd ? "Há alterações não salvas." : "Nenhuma alteração.")) + '</span><span style="display:flex;gap:8px">' +
     '<button class="btn" id="btnDesc"' + (dd && !ui.saving ? "" : " disabled") + '>Descartar</button>' +
     '<button class="btn" id="btnSair"' + (ui.saving ? " disabled" : "") + '>' + (dd ? "Continuar depois" : "Sair da edição") + '</button>' +
@@ -628,6 +634,13 @@ function baixar(){
     var c = err && err.code; if (c === "declined") return;
     toast(c === "rate_limited" ? "Já tem um download esperando confirmação." : "Não foi possível baixar o arquivo aqui.");
   });
+}
+function fmtHora(iso){ try { return new Date(iso).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",second:"2-digit",timeZone:"America/Sao_Paulo"}); } catch(e){ return ""; } }
+function saveLocal(){
+  var now = new Date().toISOString();
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ estado:state, base: JSON.parse(ORIGINAL).atualizado || null, salvoEm:now })); }
+  catch(e){ ui.saveFail = true; return false; }
+  ui.saveFail = false; BASELINE = JSON.stringify(state); ui.local = now; return true;
 }
 function salvar(){
   if (STANDALONE){
