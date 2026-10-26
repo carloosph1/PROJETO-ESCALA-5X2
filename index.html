@@ -19,7 +19,7 @@
   --anil:#23409e;--anil-ink:#ffffff;--anil-soft:#e2e8f8;
   --ochre:#9a6410;--ochre-soft:#fbeed6;
   --red:#b9302a;--red-soft:#fbe1de;--orange:#b85a0c;--orange-soft:#fde6cf;
-  --ok:#2f7a4a;--closed:#f5f5f6;--hatch:#e9e9eb;
+  --ok:#2f7a4a;--closed:#f5f5f6;--hatch:#e9e9eb;--dom:#0b7a55;--dom-soft:#d6f3e6;
   --f-display:"Familjen Grotesk","Helvetica Neue",Arial,sans-serif;
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -29,13 +29,13 @@
   --anil:#3b5bc4;--anil-ink:#ffffff;--anil-soft:#1e2948;
   --ochre:#e3ad52;--ochre-soft:#3a2b12;
   --red:#ff7b70;--red-soft:#4a1e1b;--orange:#ffa456;--orange-soft:#47290f;
-  --ok:#6fcf8f;--closed:#232325;--hatch:#2d2d30;color-scheme:dark}}
+  --ok:#6fcf8f;--closed:#232325;--hatch:#2d2d30;--dom:#5fd6a8;--dom-soft:#123d2e;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#141414;--surface:#1d1d1f;--ink:#ececee;--muted:#9c9ca3;--line:#2e2e31;--line-strong:#45454a;
   --anil:#3b5bc4;--anil-ink:#ffffff;--anil-soft:#1e2948;
   --ochre:#e3ad52;--ochre-soft:#3a2b12;
   --red:#ff7b70;--red-soft:#4a1e1b;--orange:#ffa456;--orange-soft:#47290f;
-  --ok:#6fcf8f;--closed:#232325;--hatch:#2d2d30;color-scheme:dark}
+  --ok:#6fcf8f;--closed:#232325;--hatch:#2d2d30;--dom:#5fd6a8;--dom-soft:#123d2e;color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
 button,input,select{font:inherit;color:inherit}
@@ -75,6 +75,7 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(26px,4vw,38px);l
 .fh-list li b{color:var(--anil);font-size:14px}
 .fh-list li span{font-size:11.5px;color:var(--muted)}
 .fh-list li.warn{background:var(--orange-soft)}.fh-list li.warn b{color:var(--orange)}
+.fh-list li.dom{background:var(--dom-soft)}.fh-list li.dom b{color:var(--dom)}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:16px}
 .summary>div{background:var(--surface);padding:12px 14px;min-width:0}
 .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -111,6 +112,7 @@ table.grid{border-collapse:separate;border-spacing:0;font-variant-numeric:tabula
 td.c{font-family:var(--f-mono);font-size:11.5px;position:relative;cursor:default}
 td.c.T{color:var(--muted)}
 td.c.F{background:var(--anil-soft);color:var(--anil);font-weight:600}
+td.c.F.dom{background:var(--dom-soft);color:var(--dom);box-shadow:inset 0 0 0 1.5px var(--dom)}
 td.c.mon{background:var(--closed);color:var(--muted);font-weight:500}
 td.c.shut{background:var(--closed);color:var(--muted)}
 td.c.ferT{background:color-mix(in srgb,var(--ochre-soft) 45%,transparent)}
@@ -228,7 +230,7 @@ table.list{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-num
   <div class="savebar" id="savebar" hidden></div>
   <div class="toast" id="toast" hidden></div>
 </div>
-<script type="application/json" id="estado">{"inicio":"2026-12-16","limite":42,"ref":"2026-12-15","turno":{"codigo":"T1","descricao":"Turno único","entrada":"08:00","saida":"17:24","intervalo":1},"feriados":[{"data":"2026-12-25","nome":"Natal"},{"data":"2027-01-01","nome":"Confraternização Universal"},{"data":"2027-02-08","nome":"Carnaval (ponto facultativo)"},{"data":"2027-02-09","nome":"Carnaval"},{"data":"2027-03-06","nome":"Data Magna de Pernambuco"},{"data":"2027-03-26","nome":"Sexta-feira Santa"},{"data":"2027-04-21","nome":"Tiradentes"},{"data":"2027-05-01","nome":"Dia do Trabalho"},{"data":"2027-05-27","nome":"Corpus Christi (ponto facultativo)"},{"data":"2027-06-24","nome":"São João"},{"data":"2027-07-16","nome":"N. Sra. do Carmo (Recife)"},{"data":"2027-09-07","nome":"Independência"},{"data":"2027-10-12","nome":"N. Sra. Aparecida"},{"data":"2027-11-02","nome":"Finados"},{"data":"2027-11-15","nome":"Proclamação da República"},{"data":"2027-11-20","nome":"Consciência Negra"},{"data":"2027-12-08","nome":"N. Sra. da Conceição (Recife)"},{"data":"2027-12-25","nome":"Natal"}],"equipe":[{"id":"p01","nome":"Anderson","funcao":"Garçom","folgas":{"2026-12-29":"Sex"}},{"id":"p02","nome":"Arkiles","funcao":"Garçom","folgas":{}},{"id":"p03","nome":"John","funcao":"Garçom","folgas":{"2026-12-29":"Sex"}},{"id":"p04","nome":"Paulo","funcao":"Garçom","folgas":{"2026-12-29":"Sex"}},{"id":"p05","nome":"Severino","funcao":"Garçom","folgas":{"2026-12-29":"Sex"}},{"id":"p06","nome":"André","funcao":"Cumim","folgas":{}},{"id":"p07","nome":"Diógenes","funcao":"Cumim","folgas":{"2026-12-29":"Sex"}},{"id":"p08","nome":"Weydson","funcao":"Cumim","folgas":{"2026-12-29":"Sex"}},{"id":"p09","nome":"Ailton","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p10","nome":"José Aureliano","funcao":"Cozinha","folgas":{}},{"id":"p11","nome":"Katiuscha","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p12","nome":"Emerson","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p13","nome":"Douglas","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p14","nome":"Firmino","funcao":"Cozinha","folgas":{}},{"id":"p15","nome":"Emerson","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p16","nome":"Vinicius","funcao":"Caixa","folgas":{"2026-12-29":"Sex"}},{"id":"p17","nome":"Herculano","funcao":"Bar","folgas":{"2026-12-29":"Sex"}},{"id":"p18","nome":"Alisson","funcao":"Copa","folgas":{}}],"trocas":{},"atualizado":"2026-10-23T18:55:05.403Z"}</script>
+<script type="application/json" id="estado">{"inicio":"2026-12-16","limite":42,"ref":"2026-12-15","turno":{"codigo":"T1","descricao":"Turno único","entrada":"08:00","saida":"17:24","intervalo":1},"feriados":[{"data":"2026-12-25","nome":"Natal"},{"data":"2027-01-01","nome":"Confraternização Universal"},{"data":"2027-02-08","nome":"Carnaval (ponto facultativo)"},{"data":"2027-02-09","nome":"Carnaval"},{"data":"2027-03-06","nome":"Data Magna de Pernambuco"},{"data":"2027-03-26","nome":"Sexta-feira Santa"},{"data":"2027-04-21","nome":"Tiradentes"},{"data":"2027-05-01","nome":"Dia do Trabalho"},{"data":"2027-05-27","nome":"Corpus Christi (ponto facultativo)"},{"data":"2027-06-24","nome":"São João"},{"data":"2027-07-16","nome":"N. Sra. do Carmo (Recife)"},{"data":"2027-09-07","nome":"Independência"},{"data":"2027-10-12","nome":"N. Sra. Aparecida"},{"data":"2027-11-02","nome":"Finados"},{"data":"2027-11-15","nome":"Proclamação da República"},{"data":"2027-11-20","nome":"Consciência Negra"},{"data":"2027-12-08","nome":"N. Sra. da Conceição (Recife)"},{"data":"2027-12-25","nome":"Natal"}],"equipe":[{"id":"p01","nome":"Anderson","funcao":"Garçom","folgas":{"2026-12-29":"Sex"}},{"id":"p02","nome":"Arkiles","funcao":"Garçom","folgas":{}},{"id":"p03","nome":"John","funcao":"Garçom","folgas":{"2026-12-29":"Sex"}},{"id":"p04","nome":"Paulo","funcao":"Garçom","folgas":{"2026-12-29":"Sex"}},{"id":"p05","nome":"Severino","funcao":"Garçom","folgas":{"2026-12-29":"Sex"}},{"id":"p06","nome":"André","funcao":"Cumim","folgas":{}},{"id":"p07","nome":"Diógenes","funcao":"Cumim","folgas":{"2026-12-29":"Sex"}},{"id":"p08","nome":"Weydson","funcao":"Cumim","folgas":{"2026-12-29":"Sex"}},{"id":"p09","nome":"Ailton","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p10","nome":"José Aureliano","funcao":"Cozinha","folgas":{}},{"id":"p11","nome":"Katiuscha","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"},"dom15":"b"},{"id":"p12","nome":"Emerson","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p13","nome":"Douglas","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p14","nome":"Firmino","funcao":"Cozinha","folgas":{}},{"id":"p15","nome":"Emerson","funcao":"Cozinha","folgas":{"2026-12-29":"Sex"}},{"id":"p16","nome":"Vinicius","funcao":"Caixa","folgas":{"2026-12-29":"Sex"}},{"id":"p17","nome":"Herculano","funcao":"Bar","folgas":{"2026-12-29":"Sex"}},{"id":"p18","nome":"Alisson","funcao":"Copa","folgas":{}}],"trocas":{},"atualizado":"2026-10-23T18:55:05.403Z"}</script>
 <script data-src>
 (function(){
 "use strict";
@@ -292,9 +294,10 @@ function compute(inicioISO){
   }
   var weeks = []; for (var i = 1; i <= nW; i++){ var ws = b5 + 7*(i-1); weeks.push({ i:i, startN:ws, iso:toISO(ws), label:ddmm(ws)+"–"+ddmm(ws+6) }); }
   var team = state.equipe.filter(function(p){ return (p.nome||"").trim() !== ""; });
-  function autoFolga(idx, w){ return ROT[mod(idx + offset + (w-1), 4)]; }
+  function domWeek(p, w){ if (!p.dom15) return false; return mod(offset + (w-1) + (p.dom15 === "b" ? 1 : 0), 2) === 0; }
+  function autoFolga(idx, w, p){ return domWeek(p, w) ? "Dom" : ROT[mod(idx + offset + (w-1), 4)]; }
   var rows = team.map(function(p, idx){
-    var folgaW = weeks.map(function(wk){ var a = autoFolga(idx, wk.i); var o = p.folgas && p.folgas[wk.iso]; return { auto:a, val:o || a, ov:!!o }; });
+    var folgaW = weeks.map(function(wk){ var a = autoFolga(idx, wk.i, p); var o = p.folgas && p.folgas[wk.iso]; return { auto:a, val:o || a, ov:!!o }; });
     var cells = days.map(function(d){
       var auto = d.wd === 1 ? "F" : (folgaW[d.week-1].val === d.dn ? "F" : "T");
       var key = p.id + "|" + d.iso, o = state.trocas[key];
@@ -316,9 +319,10 @@ function compute(inicioISO){
       if (cell.v === "F" && d.wd !== 1 && !shut[j]){ if (r.p.funcao === "Garçom") g.push(r); if (r.p.funcao === "Cumim") c.push(r); }
       if (d.wd === 1) cell.cls.push("mon");
       else if (shut[j]) cell.cls.push("shut");
-      if (cell.v === "F" && (d.wd === 6 || d.wd === 7)){ cell.cls.push("bad"); alerts.push({ t:"red", s:3, n:d.n, txt:"<b>" + esc(r.p.nome) + "</b> de folga no " + DIAS_LONGO[d.dn].toLowerCase() + " " + ddmm(d.n) + ". Sábado e domingo ninguém folga." }); }
+      if (cell.v === "F" && (d.wd === 6 || (d.wd === 7 && !r.p.dom15))){ cell.cls.push("bad"); alerts.push({ t:"red", s:3, n:d.n, txt:"<b>" + esc(r.p.nome) + "</b> de folga no " + DIAS_LONGO[d.dn].toLowerCase() + " " + ddmm(d.n) + ". Sábado e domingo ninguém folga." }); }
       if (cell.v === "T" && d.wd === 1){ alerts.push({ t:"red", s:3, n:d.n, txt:"<b>" + esc(r.p.nome) + "</b> escalado na segunda " + ddmm(d.n) + ", dia em que o restaurante fecha." }); }
       if (cell.v === "T" && d.fer) cell.cls.push("ferT");
+      if (cell.v === "F" && d.wd === 7 && r.p.dom15) cell.cls.push("dom");
       if (cell.ov) cell.cls.push("ov");
     });
     offG.push(d.wd === 1 ? null : g.length); offC.push(d.wd === 1 ? null : c.length);
@@ -330,6 +334,17 @@ function compute(inicioISO){
       else if (d.wd !== 1) alerts.push({ t:"ochre", s:1, n:d.n, txt:"Feriado " + ddmm(d.n) + " (" + esc(d.fer) + "): " + work + " pessoa" + (work===1?"":"s") + " trabalhando, com pagamento em dobro ou folga compensatória." });
     }
   });
+  /* CLT art. 386: mulheres com folga no domingo a cada 15 dias */
+  rows.forEach(function(r){
+    if (!r.p.dom15) return;
+    var prev = null;
+    days.forEach(function(d, j){
+      if (d.wd !== 7) return;
+      var trab = r.cells[j].v === "T";
+      if (trab && prev && prev.trab){ r.cells[j].cls.push("bad"); alerts.push({ t:"red", s:3, n:d.n, txt:"<b>" + esc(r.p.nome) + "</b> trabalha os domingos " + ddmm(prev.n) + " e " + ddmm(d.n) + " seguidos. Pela CLT (art. 386), ela precisa folgar um domingo a cada 15 dias." }); }
+      prev = { n:d.n, trab:trab };
+    });
+  });
   var limite = +state.limite || 42;
   rows.forEach(function(r){
     r.hours = weeks.map(function(wk){ var t = 0; days.forEach(function(d, j){ if (d.week === wk.i && r.cells[j].v === "T") t++; }); return t * horasTurno; });
@@ -337,7 +352,7 @@ function compute(inicioISO){
     r.hours.forEach(function(h, k){ if (h > limite + 1e-6) alerts.push({ t:"red", s:3, n:weeks[k].startN, txt:"<b>" + esc(r.p.nome) + "</b> com " + fmtH(h) + " na semana " + weeks[k].label + " (limite " + limite + "h)." }); });
   });
   alerts.sort(function(a,b){ return (b.s - a.s) || (a.n - b.n); });
-  return { start:start, end:end, b5:b5, offset:offset, horasTurno:horasTurno, days:days, weeks:weeks, rows:rows, alerts:alerts, cover:cover, funcs:funcs, offG:offG, offC:offC, shut:shut, limite:limite };
+  return { domWeek:domWeek, start:start, end:end, b5:b5, offset:offset, horasTurno:horasTurno, days:days, weeks:weeks, rows:rows, alerts:alerts, cover:cover, funcs:funcs, offG:offG, offC:offC, shut:shut, limite:limite };
 }
 function idxF(f){ var i = FUNCOES.indexOf(f); return i < 0 ? 99 : i; }
 
@@ -405,7 +420,7 @@ function folgasDoDia(iso){
   if (j < 0) return null;
   var d = mm.days[j];
   return { d:d, iso:iso, fora: ini !== state.inicio, mon: d.wd === 1, shut: mm.shut[j], total: mm.rows.length,
-    off: mm.rows.filter(function(r){ return r.cells[j].v === "F"; }).map(function(r){ var c = r.cells[j].cls; return { nome:r.p.nome, funcao:r.p.funcao, alerta: c.indexOf("bad") >= 0 || c.indexOf("clash") >= 0, troca: c.indexOf("ov") >= 0 }; }) };
+    off: mm.rows.filter(function(r){ return r.cells[j].v === "F"; }).map(function(r){ var c = r.cells[j].cls; return { nome:r.p.nome, funcao:r.p.funcao, alerta: c.indexOf("bad") >= 0 || c.indexOf("clash") >= 0, troca: c.indexOf("ov") >= 0, dom: c.indexOf("dom") >= 0 }; }) };
 }
 function blocoFolga(info, rotulo){
   var d = info.d, tit = '<div class="fh-day"><span class="k">' + rotulo + '</span><b>' + DIAS_LONGO[d.dn] + ', ' + ddmm(d.n) + '</b>' + (d.fer ? '<span class="fh-fer">Feriado: ' + esc(d.fer) + '</span>' : '') + '</div>';
@@ -416,7 +431,7 @@ function blocoFolga(info, rotulo){
   var dup = {}; info.off.forEach(function(o){ if (o.funcao === "Garçom" || o.funcao === "Cumim") dup[o.funcao] = (dup[o.funcao]||0) + 1; });
   var avis = Object.keys(dup).filter(function(f){ return dup[f] > 1; }).map(function(f){ return dup[f] + ' ' + (f === "Garçom" ? "garçons" : "cumins") + ' de folga juntos'; });
   return tit + '<p class="fh-msg"><b>' + info.off.length + ' de folga</b>, ' + (info.total - info.off.length) + ' no turno ' + esc(state.turno.codigo) + ' (' + state.turno.entrada + '–' + state.turno.saida + ').' + (avis.length ? ' <span class="fh-warn">Atenção: ' + avis.join(" e ") + '.</span>' : '') + '</p>' +
-    '<ul class="fh-list">' + info.off.map(function(o){ return '<li class="' + (o.alerta ? "warn" : "") + '"><b>' + esc(o.nome) + '</b><span>' + esc(o.funcao) + (o.troca ? " · troca" : "") + '</span></li>'; }).join("") + '</ul>';
+    '<ul class="fh-list">' + info.off.map(function(o){ return '<li class="' + (o.alerta ? "warn" : (o.dom ? "dom" : "")) + '"><b>' + esc(o.nome) + '</b><span>' + esc(o.funcao) + (o.dom ? " · domingo (CLT)" : "") + (o.troca ? " · troca" : "") + '</span></li>'; }).join("") + '</ul>';
 }
 function renderFolgasHoje(){
   var el = document.getElementById("folgasHoje"); if (!el) return;
@@ -459,7 +474,7 @@ function renderEscala(){
        '<span class="chips"><button class="chip" id="tgHoras" aria-pressed="' + !!ui.showHoras + '">Horas</button>' +
        '<button class="chip" id="tgCob" aria-pressed="' + !!ui.showCob + '">Cobertura</button>' +
        '<button class="chip' + (nGrave ? " danger" : (nAl ? " warn" : "")) + '" id="tgAl" aria-pressed="' + !!ui.showAl + '">Alertas' + (nAl ? ' <b>' + nAl + '</b>' : '') + '</button></span>' +
-       '<span class="legend"><span><i class="sw swx" style="background:var(--anil-soft);color:var(--anil)">F</i>Folga</span><span><i class="sw swx" style="background:var(--closed)">X</i>Fechado</span><span><i class="sw" style="background:var(--ochre-soft)"></i>Feriado</span><span class="muted">Em branco: trabalha ' + esc(state.turno.codigo) + ' (' + state.turno.entrada + '–' + state.turno.saida + ')</span></span></div>';
+       '<span class="legend"><span><i class="sw swx" style="background:var(--anil-soft);color:var(--anil)">F</i>Folga</span>' + (M.rows.some(function(r){ return r.p.dom15; }) ? '<span><i class="sw swx" style="background:var(--dom-soft);color:var(--dom);border-color:var(--dom)">F</i>Domingo (CLT, mulheres)</span>' : '') + '<span><i class="sw swx" style="background:var(--closed)">X</i>Fechado</span><span><i class="sw" style="background:var(--ochre-soft)"></i>Feriado</span><span class="muted">Em branco: trabalha ' + esc(state.turno.codigo) + ' (' + state.turno.entrada + '–' + state.turno.saida + ')</span></span></div>';
   if (ui.showAl){
     h += '<div class="alertbox">';
     if (!M.alerts.length) h += '<p class="muted" style="margin:0">Nenhum alerta. Fim de semana coberto, folgas sem choque e horas dentro do limite.</p>';
@@ -540,8 +555,8 @@ function renderDia(){
 function renderEquipe(){
   var v = document.getElementById("view-equipe"), ed = ui.editing;
   var h = '';
-  h += '<p class="hint" style="margin:0 0 12px">A segunda folga de cada semana vem do rodízio Ter → Qua → Qui → Sex, que continua de um mês para o outro. ' + (ed ? 'Escolha outro dia para trocar; a caixa fica azul quando foge do rodízio. "Rodízio" devolve ao dia sugerido.' : 'Dias em azul fogem do rodízio sugerido.') + '</p>';
-  h += '<div class="gridbox"><table class="list"><thead><tr><th>Nº</th><th>Nome</th><th>Função</th><th>Turno</th>';
+  h += '<p class="hint" style="margin:0 0 12px">A segunda folga de cada semana vem do rodízio Ter → Qua → Qui → Sex, que continua de um mês para o outro. ' + (ed ? 'Escolha outro dia para trocar; a caixa fica azul quando foge do rodízio. "Rodízio" devolve ao dia sugerido.' : 'Dias em azul fogem do rodízio sugerido.') + ' Para as mulheres marcadas em "Domingo a cada 15 dias" (CLT art. 386), a folga de semana alternada passa a ser o domingo.</p>';
+  h += '<div class="gridbox"><table class="list"><thead><tr><th>Nº</th><th>Nome</th><th>Função</th><th>Turno</th><th title="CLT art. 386">Domingo a cada 15 dias</th>';
   M.weeks.forEach(function(wk){ h += '<th>Folga S' + wk.i + '<br><small>' + wk.label + '</small></th>'; });
   h += '<th>Horas no mês</th>' + (ed ? '<th></th>' : '') + '</tr></thead><tbody>';
   var byId = {}; M.rows.forEach(function(r){ byId[r.p.id] = r; });
@@ -555,12 +570,21 @@ function renderEquipe(){
       h += '<td>' + esc(p.nome) + '</td><td>' + esc(p.funcao) + '</td>';
     }
     h += '<td class="muted">' + esc(state.turno.codigo) + '</td>';
+    var domLbl = function(ph){ var ds = M.weeks.filter(function(wk){ return mod(M.offset + (wk.i-1) + (ph === "b" ? 1 : 0), 2) === 0; }).map(function(wk){ return ddmm(wk.startN + 5); }); return ds.slice(0,2).join(", ") + (ds.length > 2 ? "…" : ""); };
+    if (ed){
+      h += '<td><select id="d15-' + esc(p.id) + '" data-act="dom15" data-p="' + esc(p.id) + '" aria-label="Domingo de folga a cada 15 dias">' +
+           '<option value=""' + (!p.dom15 ? " selected" : "") + '>Não</option>' +
+           '<option value="a"' + (p.dom15 === "a" ? " selected" : "") + '>Sim: ' + domLbl("a") + '</option>' +
+           '<option value="b"' + (p.dom15 === "b" ? " selected" : "") + '>Sim: ' + domLbl("b") + '</option></select></td>';
+    } else {
+      h += '<td>' + (p.dom15 ? '<span class="pill F">Sim</span> <small>' + domLbl(p.dom15) + '</small>' : '<span class="muted">Não</span>') + '</td>';
+    }
     M.weeks.forEach(function(wk, k){
       if (!r){ h += '<td></td>'; return; }
       var fw = r.folgaW[k];
       if (ed){
         h += '<td><select id="fg-' + esc(p.id) + '-' + wk.i + '" class="' + (fw.ov && fw.val !== fw.auto ? "ovr" : "") + '" data-act="folga" data-p="' + esc(p.id) + '" data-w="' + wk.iso + '" aria-label="Folga semana ' + wk.i + '">' +
-             '<option value="">Rodízio (' + fw.auto + ')</option>' + ROT.map(function(x){ return '<option value="' + x + '"' + (fw.ov && fw.val === x ? " selected" : "") + '>' + x + '</option>'; }).join("") + '</select></td>';
+             '<option value="">Rodízio (' + fw.auto + ')</option>' + (p.dom15 ? ROT.concat(["Dom"]) : ROT).map(function(x){ return '<option value="' + x + '"' + (fw.ov && fw.val === x ? " selected" : "") + '>' + x + '</option>'; }).join("") + '</select></td>';
       } else {
         h += '<td>' + (fw.ov && fw.val !== fw.auto ? '<span class="pill F">' + fw.val + '</span>' : fw.val) + '</td>';
       }
@@ -579,7 +603,8 @@ function renderConfig(){
   var nTrocas = Object.keys(state.trocas).filter(function(k){ var iso = k.split("|")[1]; var n = toN(iso); return n >= M.start && n <= M.end; }).length;
   var h = '<div class="stack"><div class="panel"><h2>Regras da escala</h2><div class="rules" style="margin:0;padding:0;border:0">' +
     '<p><b>5x2:</b> segunda é folga fixa (restaurante fechado) e cada um tem mais 1 folga entre terça e sexta, em rodízio.</p>' +
-    '<p><b>Fim de semana:</b> sábado e domingo ninguém folga.</p><p><b>Garçons e cumins:</b> no máximo 1 de cada de folga no mesmo dia.</p>' +
+    '<p><b>Fim de semana:</b> sábado e domingo ninguém folga, exceto o domingo das mulheres abaixo.</p>' +
+    '<p><b>Mulheres (CLT art. 386):</b> quem trabalha aos domingos precisa folgar um domingo a cada 15 dias. Marque na aba Equipe e folgas, em "Domingo a cada 15 dias". Nessas semanas, o domingo substitui a folga de terça a sexta.</p><p><b>Garçons e cumins:</b> no máximo 1 de cada de folga no mesmo dia.</p>' +
     '<p><b>Limite:</b> ' + M.limite + 'h por semana (EC 141/2026, até 15/12/2027). A partir de 16/12/2027, 40h e turnos de 8h.</p>' +
     '<p><b>Atenção legal:</b> 8h24 por dia só vale com acordo ou convenção coletiva durante a transição. Confirme com o contador.</p></div></div>' +
     '<div class="panel"><h2>Mês da escala</h2><div class="formgrid">';
@@ -705,6 +730,7 @@ document.addEventListener("change", function(e){
   var p = t.dataset.p && person(t.dataset.p); if (!p) return;
   if (t.dataset.act === "nome"){ p.nome = t.value.trim(); render(); }
   else if (t.dataset.act === "funcao"){ p.funcao = t.value; render(); }
+  else if (t.dataset.act === "dom15"){ if (t.value) p.dom15 = t.value; else delete p.dom15; render(); }
   else if (t.dataset.act === "folga"){ p.folgas = p.folgas || {}; if (t.value) p.folgas[t.dataset.w] = t.value; else delete p.folgas[t.dataset.w]; render(); }
 });
 window.addEventListener("beforeunload", function(e){ if (ui.editing && dirty() && !ui.saving){ e.preventDefault(); e.returnValue = ""; } });
