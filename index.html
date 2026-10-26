@@ -141,6 +141,13 @@ th.hh{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);padding:0 6p
 @media (max-width:900px){.toolbar .legend{margin-left:0}}
 .alertbox{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px}
 .grid th.d.monh .dn,.grid th.d.monh .dw{color:var(--muted);font-weight:400}
+/* rodapé / login gestor */
+.foot{padding-block:8px 28px;display:flex;justify-content:flex-end}
+.linkbtn{background:none;border:0;padding:4px 0;color:var(--muted);font-size:12.5px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.linkbtn:hover{color:var(--anil)}
+.loginf{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.loginf input{border:1px solid var(--line-strong);background:var(--surface);border-radius:6px;padding:5px 8px;width:180px;max-width:100%}
+.loginerr{color:var(--red);font-weight:600}
 /* alertas */
 .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:18px;align-items:start}
 @media (max-width:1000px){.cols{grid-template-columns:minmax(0,1fr)}}
@@ -214,6 +221,7 @@ table.list{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-num
     <section class="view" id="view-equipe" hidden></section>
     <section class="view" id="view-config" hidden></section>
   </main>
+  <footer class="wrap foot" id="rodape"></footer>
   <div class="savebar" id="savebar" hidden></div>
   <div class="toast" id="toast" hidden></div>
 </div>
@@ -236,15 +244,10 @@ var state = JSON.parse(ORIGINAL);
 /* fora do Claude (GitHub, arquivo aberto no computador): edição salva no navegador + baixar index.html */
 var STANDALONE = !(window.claude && typeof window.claude.use === "function");
 var LS_KEY = "tp-escala-local";
-/* modo gestor fora do Claude: abrir o site com #editar no final do endereço (fica lembrado neste navegador); #ver desliga */
+/* modo gestor fora do Claude: botão "Entrar como gestor" no rodapé, com senha (fica lembrado neste navegador) */
+var SENHA_HASH = "703a00706e32f73ad99122e468b1bf7b0138935c2fb919396878f6250488706b";
 var ADMIN = false;
-if (STANDALONE){
-  try {
-    if (location.hash === "#editar") localStorage.setItem("tp-admin", "1");
-    if (location.hash === "#ver") localStorage.removeItem("tp-admin");
-    ADMIN = localStorage.getItem("tp-admin") === "1";
-  } catch(e){ ADMIN = location.hash === "#editar"; }
-}
+if (STANDALONE){ try { ADMIN = localStorage.getItem("tp-admin") === SENHA_HASH; } catch(e){} }
 var ui = { tab:"escala", filtro:"", editing:false, canEdit:STANDALONE && ADMIN, readOnlyMsg:"", dia:null, saving:false, local:null, dl:STANDALONE && ADMIN };
 if (STANDALONE && ADMIN){ try { var sv = JSON.parse(localStorage.getItem(LS_KEY) || "null"); if (sv && sv.estado && sv.base === (state.atualizado || null)){ state = sv.estado; ui.local = sv.salvoEm; } } catch(e){} }
 var BASELINE = JSON.stringify(state);
@@ -342,7 +345,38 @@ function render(){
   M = compute(); cacheM = {};
   document.getElementById("periodo").textContent = ddmmyyyy(M.start) + " a " + ddmmyyyy(M.end) + " · Turno " + state.turno.codigo + " " + state.turno.entrada + "–" + state.turno.saida + " · segunda fechado";
   renderHeader(); renderFolgasHoje(); renderSummary(); renderTabs();
-  renderEscala(); renderDia(); renderEquipe(); renderConfig(); renderSavebar();
+  renderEscala(); renderDia(); renderEquipe(); renderConfig(); renderSavebar(); renderRodape();
+}
+function renderRodape(){
+  var f = document.getElementById("rodape"); if (!f) return;
+  if (!STANDALONE || ADMIN){ f.innerHTML = ""; return; }
+  if (!ui.login){ f.innerHTML = '<button class="linkbtn" id="btnGestor">Entrar como gestor</button>'; return; }
+  f.innerHTML = '<form class="loginf" id="loginForm"><label for="senhaGestor">Senha do gestor</label><input type="password" id="senhaGestor" autocomplete="current-password">' +
+    '<button class="btn small primary" type="submit">Entrar</button><button class="btn small ghost" type="button" id="btnGestorCancel">Cancelar</button>' +
+    (ui.loginErr ? '<span class="loginerr">Senha incorreta.</span>' : '') + '</form>';
+  var i = document.getElementById("senhaGestor"); if (i) i.focus();
+}
+/* SHA-256 em JS puro (funciona também com o arquivo aberto direto do computador) */
+function sha256(str){
+  function r(n,x){ return (x>>>n)|(x<<(32-n)); }
+  var K=[], H=[], pr=0, c=2;
+  function isP(n){ for (var f=2; f*f<=n; f++) if (n%f===0) return false; return true; }
+  while (pr<64){ if (isP(c)){ if (pr<8) H[pr]=(Math.pow(c,1/2)*4294967296)|0; K[pr]=(Math.pow(c,1/3)*4294967296)|0; pr++; } c++; }
+  var bytes = unescape(encodeURIComponent(str)), l = bytes.length, words = [];
+  for (var i=0;i<l;i++) words[i>>2] |= (bytes.charCodeAt(i)&255) << (24 - (i%4)*8);
+  words[l>>2] |= 0x80 << (24 - (l%4)*8);
+  words[((l+8)>>6<<4)+15] = l*8;
+  for (var j=0;j<words.length;j+=16){
+    var W=[], a=H[0],b=H[1],cc=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for (var t=0;t<64;t++){
+      if (t<16) W[t]=words[j+t]|0;
+      else { var x=W[t-15], y=W[t-2]; W[t]=(W[t-16]+(r(7,x)^r(18,x)^(x>>>3))+W[t-7]+(r(17,y)^r(19,y)^(y>>>10)))|0; }
+      var t1=(h+(r(6,e)^r(11,e)^r(25,e))+((e&f)^(~e&g))+K[t]+W[t])|0, t2=((r(2,a)^r(13,a)^r(22,a))+((a&b)^(a&cc)^(b&cc)))|0;
+      h=g; g=f; f=e; e=(d+t1)|0; d=cc; cc=b; b=a; a=(t1+t2)|0;
+    }
+    H[0]=(H[0]+a)|0; H[1]=(H[1]+b)|0; H[2]=(H[2]+cc)|0; H[3]=(H[3]+d)|0; H[4]=(H[4]+e)|0; H[5]=(H[5]+f)|0; H[6]=(H[6]+g)|0; H[7]=(H[7]+h)|0;
+  }
+  return H.map(function(v){ return ("00000000"+(v>>>0).toString(16)).slice(-8); }).join("");
 }
 function renderHeader(){
   var h = document.getElementById("hdrActions"), s = "";
@@ -609,13 +643,15 @@ document.addEventListener("click", function(e){
     case "btnEdit": ui.editing = !ui.editing; render(); return;
     case "btnDesc": state = JSON.parse(BASELINE); render(); toast("Alterações descartadas."); return;
     case "btnBaixar": baixar(); return;
+    case "btnGestor": ui.login = true; ui.loginErr = false; renderRodape(); return;
+    case "btnGestorCancel": ui.login = false; renderRodape(); return;
     case "btnSairGestor":
       if (ui.editing && dirty()) saveLocal();
       try { localStorage.removeItem("tp-admin"); } catch(x){}
       ADMIN = false; ui.canEdit = false; ui.dl = false; ui.editing = false; ui.local = null;
       state = JSON.parse(ORIGINAL); BASELINE = JSON.stringify(state);
       try { history.replaceState(null, "", location.pathname + location.search); } catch(x){}
-      render(); toast("Modo gestor desligado neste navegador. Para voltar, abra o site com #editar no final do endereço.");
+      render(); toast("Modo gestor desligado neste navegador. Para voltar, use Entrar como gestor no fim da página.");
       return;
     case "tgHoras": ui.showHoras = !ui.showHoras; saveVis(); renderEscala(); return;
     case "tgCob": ui.showCob = !ui.showCob; saveVis(); renderEscala(); return;
@@ -642,6 +678,14 @@ document.addEventListener("click", function(e){
   }
   if (t.dataset.ferdel !== undefined){ state.feriados.splice(+t.dataset.ferdel, 1); render(); }
 });
+document.addEventListener("submit", function(e){
+  if (e.target.id !== "loginForm") return;
+  e.preventDefault();
+  var hsh = sha256("tiopepe-escala|" + (document.getElementById("senhaGestor").value || ""));
+  if (hsh !== SENHA_HASH){ ui.loginErr = true; renderRodape(); return; }
+  try { localStorage.setItem("tp-admin", hsh); location.reload(); }
+  catch(x){ ADMIN = true; ui.canEdit = true; ui.dl = true; ui.login = false; render(); }
+});
 document.addEventListener("keydown", function(e){
   var t = e.target; if (!(t.matches && t.matches("td.c")) || !ui.editing) return;
   if (e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleCell(t.dataset.p, t.dataset.d); }
@@ -660,7 +704,6 @@ document.addEventListener("change", function(e){
   else if (t.dataset.act === "funcao"){ p.funcao = t.value; render(); }
   else if (t.dataset.act === "folga"){ p.folgas = p.folgas || {}; if (t.value) p.folgas[t.dataset.w] = t.value; else delete p.folgas[t.dataset.w]; render(); }
 });
-window.addEventListener("hashchange", function(){ if (STANDALONE && (location.hash === "#editar" || location.hash === "#ver")) location.reload(); });
 window.addEventListener("beforeunload", function(e){ if (ui.editing && dirty() && !ui.saving){ e.preventDefault(); e.returnValue = ""; } });
 
 /* ---------- salvar: republica a página com o novo estado ---------- */
