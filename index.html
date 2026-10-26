@@ -88,11 +88,12 @@ select,input[type=text],input[type=date],input[type=number],input[type=time]{bor
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .sw{width:16px;height:14px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block}
+.swx{width:18px;height:16px;font-style:normal;font-family:var(--f-mono);font-size:10px;font-weight:600;line-height:14px;text-align:center;color:var(--muted)}
 .editnote{background:var(--anil-soft);border:1px solid var(--anil);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:13.5px}
 /* grade */
 .gridbox{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
 table.grid{border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums;font-size:12.5px;min-width:100%}
-.grid th,.grid td{border-bottom:1px solid var(--line);text-align:center;padding:0;height:30px}
+.grid th,.grid td{border-bottom:1px solid var(--line);text-align:center;padding:0;height:28px}
 .grid thead th{position:sticky;top:0;background:var(--surface);z-index:2;font-weight:500}
 .grid .nm{position:sticky;left:0;z-index:3;background:var(--surface);text-align:left;padding:0 10px;min-width:140px;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-right:1px solid var(--line-strong)}
 .grid thead .nm{z-index:4}
@@ -102,14 +103,14 @@ table.grid{border-collapse:separate;border-spacing:0;font-variant-numeric:tabula
 .grid th.d .dn{display:block;font-weight:600;font-size:13px}
 .grid th.d.fer{background:var(--ochre-soft)}.grid th.d.fer .dw{color:var(--ochre)}
 .grid th.d.today .dn{background:var(--anil);color:var(--anil-ink);border-radius:10px;display:inline-block;min-width:22px;padding:0 4px}
-.grid .wk{border-left:2px solid var(--line-strong)}
+.grid .wk{border-left:1px solid var(--line-strong)}
 .grid th.wkh{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);text-align:left;padding:6px 6px 2px;height:auto;font-weight:400;letter-spacing:.04em}
 td.c{font-family:var(--f-mono);font-size:11.5px;position:relative;cursor:default}
 td.c.T{color:var(--muted)}
 td.c.F{background:var(--anil-soft);color:var(--anil);font-weight:600}
-td.c.mon{background:repeating-linear-gradient(135deg,var(--closed) 0 5px,var(--hatch) 5px 7px);color:var(--muted);font-weight:400}
+td.c.mon{background:var(--closed);color:var(--muted);font-weight:500}
 td.c.shut{background:var(--closed);color:var(--muted)}
-td.c.ferT{box-shadow:inset 0 -3px 0 var(--ochre)}
+td.c.ferT{background:color-mix(in srgb,var(--ochre-soft) 45%,transparent)}
 td.c.bad{background:var(--red-soft);color:var(--red);font-weight:600;box-shadow:inset 0 0 0 1.5px var(--red)}
 td.c.clash{background:var(--orange-soft);color:var(--orange);box-shadow:inset 0 0 0 1.5px var(--orange)}
 td.c.ov::after{content:"";position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--ink)}
@@ -120,13 +121,26 @@ td.h.over{color:var(--red);font-weight:600;background:var(--red-soft)}
 td.h.zero{color:var(--muted)}
 th.hh{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);padding:0 6px;font-weight:400}
 .grid tbody tr:hover td.nm{color:var(--anil)}
-.grid tr.grp td{background:var(--bg);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 10px;height:24px}
+.grid tr.grp td{background:var(--bg);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 10px 2px;height:auto;border-bottom:1px solid var(--line-strong)}
 .grid tr.grp td.nm{background:var(--bg)}
 .grid tfoot td{font-family:var(--f-mono);font-size:11.5px;background:var(--closed)}
 .grid tfoot td.nm,.grid tfoot td.fn{background:var(--closed);font-family:var(--f-body);font-size:12px}
 .grid tfoot tr:first-child td{border-top:1px solid var(--line-strong)}
 .grid tfoot td.warn{background:var(--orange-soft);color:var(--orange);font-weight:600}
 .grid tfoot td.low{color:var(--red);font-weight:600}
+/* filtros da escala */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer;color:var(--muted)}
+.chip:hover{border-color:var(--anil)}
+.chip[aria-pressed="true"]{background:var(--anil-soft);border-color:var(--anil);color:var(--anil)}
+.chip b{font-weight:600;margin-left:2px}
+.chip.warn b{color:var(--orange)}.chip.danger b{color:var(--red)}
+.chip:focus-visible{outline:2px solid var(--anil);outline-offset:1px}
+.toolbar .legend{margin-left:auto}
+@media (max-width:900px){.toolbar .legend{margin-left:0}}
+.alertbox{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px}
+.grid th.d.monh .dn,.grid th.d.monh .dw{color:var(--muted);font-weight:400}
 /* alertas */
 .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:18px;align-items:start}
 @media (max-width:1000px){.cols{grid-template-columns:minmax(0,1fr)}}
@@ -222,11 +236,22 @@ var state = JSON.parse(ORIGINAL);
 /* fora do Claude (GitHub, arquivo aberto no computador): edição salva no navegador + baixar index.html */
 var STANDALONE = !(window.claude && typeof window.claude.use === "function");
 var LS_KEY = "tp-escala-local";
-var ui = { tab:"escala", filtro:"", editing:false, canEdit:STANDALONE, readOnlyMsg:"", dia:null, saving:false, local:null, dl:STANDALONE };
-if (STANDALONE){ try { var sv = JSON.parse(localStorage.getItem(LS_KEY) || "null"); if (sv && sv.estado && sv.base === (state.atualizado || null)){ state = sv.estado; ui.local = sv.salvoEm; } } catch(e){} }
+/* modo gestor fora do Claude: abrir o site com #editar no final do endereço (fica lembrado neste navegador); #ver desliga */
+var ADMIN = false;
+if (STANDALONE){
+  try {
+    if (location.hash === "#editar") localStorage.setItem("tp-admin", "1");
+    if (location.hash === "#ver") localStorage.removeItem("tp-admin");
+    ADMIN = localStorage.getItem("tp-admin") === "1";
+  } catch(e){ ADMIN = location.hash === "#editar"; }
+}
+var ui = { tab:"escala", filtro:"", editing:false, canEdit:STANDALONE && ADMIN, readOnlyMsg:"", dia:null, saving:false, local:null, dl:STANDALONE && ADMIN };
+if (STANDALONE && ADMIN){ try { var sv = JSON.parse(localStorage.getItem(LS_KEY) || "null"); if (sv && sv.estado && sv.base === (state.atualizado || null)){ state = sv.estado; ui.local = sv.salvoEm; } } catch(e){} }
 var BASELINE = JSON.stringify(state);
 try { var t = sessionStorage.getItem("tp-tab"); if (t) ui.tab = t; } catch(e){}
 try { var t2 = localStorage.getItem("tp-filtro"); if (t2 !== null) ui.filtro = t2; } catch(e){}
+try { var vis = JSON.parse(localStorage.getItem("tp-vis") || "{}"); ui.showHoras = !!vis.h; ui.showCob = !!vis.c; ui.showAl = !!vis.a; } catch(e){}
+function saveVis(){ try { localStorage.setItem("tp-vis", JSON.stringify({ h:ui.showHoras, c:ui.showCob, a:ui.showAl })); } catch(e){} }
 if (/^#(escala|dia|equipe|config)$/.test(location.hash)) ui.tab = location.hash.slice(1);
 
 /* ---------- datas (dias desde a época, UTC) ---------- */
@@ -325,6 +350,7 @@ function renderHeader(){
   if (ui.dl) s += '<button class="btn" id="btnBaixar">Baixar index.html</button>';
   if (ui.canEdit) s += '<button class="btn onband" id="btnEdit" aria-pressed="' + ui.editing + '">' + (ui.editing ? "Editando a escala" : "Editar escala") + '</button>';
   else if (ui.readOnlyMsg) s += '<span class="sub">' + esc(ui.readOnlyMsg) + '</span>';
+  if (STANDALONE && ADMIN) s += '<button class="btn small ghost" id="btnSairGestor" title="Esconde os botões de edição neste navegador">Sair do modo gestor</button>';
   h.innerHTML = s;
 }
 function fmtDT(iso){ try { return new Date(iso).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"}); } catch(e){ return iso; } }
@@ -388,50 +414,61 @@ function renderEscala(){
   var v = document.getElementById("view-escala"), td = hoje();
   var rows = M.rows.filter(function(r){ return !ui.filtro || r.p.funcao === ui.filtro; });
   var opts = '<option value="">Todas as funções</option>' + M.funcs.map(function(f){ return '<option' + (ui.filtro === f ? " selected" : "") + '>' + esc(f) + '</option>'; }).join("");
+  var nAl = M.alerts.filter(function(a){ return a.t !== "ochre"; }).length, nGrave = M.alerts.filter(function(a){ return a.t === "red"; }).length;
+  var cols = M.days.length + (ui.showHoras ? M.weeks.length + 1 : 0) + 1;
   var h = '';
-  if (ui.editing) h += '<div class="editnote">Toque numa célula para trocar entre <b>' + esc(state.turno.codigo) + '</b> e <b>F</b> (atestado, troca entre colegas). O ponto no canto marca uma troca manual; tocar de novo volta ao rodízio. ' + (STANDALONE ? 'Cada alteração é salva automaticamente neste navegador. Para atualizar o site para todos, use <b>Baixar index.html</b> e envie o arquivo para o repositório.' : 'As alterações só valem depois de <b>Salvar escala</b>.') + '</div>';
-  h += '<div class="toolbar"><label for="filtroFn">Função <select id="filtroFn">' + opts + '</select></label>' +
-       '<div class="legend"><span><i class="sw" style="background:var(--surface)"></i>' + esc(state.turno.codigo) + ' trabalha</span><span><i class="sw" style="background:var(--anil-soft)"></i>F folga</span>' +
-       '<span><i class="sw" style="background:repeating-linear-gradient(135deg,var(--closed) 0 4px,var(--hatch) 4px 6px)"></i>Segunda fechado</span>' +
-       '<span><i class="sw" style="background:var(--ochre-soft)"></i>Feriado</span><span><i class="sw" style="background:var(--red-soft);border-color:var(--red)"></i>Folga proibida</span>' +
-       '<span><i class="sw" style="background:var(--orange-soft);border-color:var(--orange)"></i>Folga coincidente</span></div></div>';
-  h += '<div class="cols"><div class="gridbox"><table class="grid' + (ui.editing ? " editing" : "") + '"><thead><tr><th class="nm" rowspan="2">Colaborador</th><th class="fn" rowspan="2">Função</th>';
-  M.weeks.forEach(function(wk){ var span = M.days.filter(function(d){ return d.week === wk.i; }).length; if (span) h += '<th class="wkh wk" colspan="' + span + '">S' + wk.i + ' · ' + wk.label + '</th>'; });
-  h += '<th class="hh wk" colspan="' + (M.weeks.length + 1) + '" style="text-align:left">Horas por semana</th></tr><tr>';
-  M.days.forEach(function(d, j){ var wkc = (j === 0 || d.wd === 2) ? " wk" : ""; h += '<th class="d' + wkc + (d.fer ? " fer" : "") + (d.iso === td ? " today" : "") + '" title="' + esc(d.fer ? d.fer : DIAS_LONGO[d.dn] + " " + ddmm(d.n)) + '"><span class="dw">' + (d.fer ? "Fer" : d.dn) + '</span><span class="dn">' + new Date(d.n*864e5).getUTCDate() + '</span></th>'; });
-  M.weeks.forEach(function(wk, k){ h += '<th class="hh' + (k === 0 ? " wk" : "") + '">S' + wk.i + '</th>'; });
-  h += '<th class="hh">Folgas</th></tr></thead><tbody>';
+  if (ui.editing) h += '<div class="editnote">Toque numa célula para marcar ou tirar a folga (atestado, troca entre colegas). O ponto no canto marca uma troca manual. ' + (STANDALONE ? 'Cada alteração é salva automaticamente neste navegador. Para atualizar o site para todos, use <b>Baixar index.html</b> e envie o arquivo para o repositório.' : 'As alterações só valem depois de <b>Salvar escala</b>.') + '</div>';
+  h += '<div class="toolbar"><label for="filtroFn" class="sr">Função</label><select id="filtroFn" aria-label="Função">' + opts + '</select>' +
+       '<span class="chips"><button class="chip" id="tgHoras" aria-pressed="' + !!ui.showHoras + '">Horas</button>' +
+       '<button class="chip" id="tgCob" aria-pressed="' + !!ui.showCob + '">Cobertura</button>' +
+       '<button class="chip' + (nGrave ? " danger" : (nAl ? " warn" : "")) + '" id="tgAl" aria-pressed="' + !!ui.showAl + '">Alertas' + (nAl ? ' <b>' + nAl + '</b>' : '') + '</button></span>' +
+       '<span class="legend"><span><i class="sw swx" style="background:var(--anil-soft);color:var(--anil)">F</i>Folga</span><span><i class="sw swx" style="background:var(--closed)">X</i>Fechado</span><span><i class="sw" style="background:var(--ochre-soft)"></i>Feriado</span><span class="muted">Em branco: trabalha ' + esc(state.turno.codigo) + ' (' + state.turno.entrada + '–' + state.turno.saida + ')</span></span></div>';
+  if (ui.showAl){
+    h += '<div class="alertbox">';
+    if (!M.alerts.length) h += '<p class="muted" style="margin:0">Nenhum alerta. Fim de semana coberto, folgas sem choque e horas dentro do limite.</p>';
+    else h += '<ul class="alerts">' + M.alerts.map(function(a){ return '<li class="' + a.t + '"><span>' + a.txt + '</span></li>'; }).join("") + '</ul>';
+    h += '</div>';
+  }
+  h += '<div class="gridbox"><table class="grid' + (ui.editing ? " editing" : "") + '"><thead><tr><th class="nm" rowspan="2">Colaborador</th>';
+  M.weeks.forEach(function(wk){ var span = M.days.filter(function(d){ return d.week === wk.i; }).length; if (span) h += '<th class="wkh wk" colspan="' + span + '">' + wk.label + '</th>'; });
+  if (ui.showHoras) h += '<th class="hh wk" colspan="' + (M.weeks.length + 1) + '" style="text-align:left">Horas por semana</th>';
+  h += '</tr><tr>';
+  M.days.forEach(function(d, j){ var wkc = (j === 0 || d.wd === 2) ? " wk" : ""; h += '<th class="d' + wkc + (d.fer ? " fer" : "") + (d.wd === 1 ? " monh" : "") + (d.iso === td ? " today" : "") + '" title="' + esc(d.fer ? d.fer : DIAS_LONGO[d.dn] + " " + ddmm(d.n)) + '"><span class="dw">' + d.dn.charAt(0) + '</span><span class="dn">' + new Date(d.n*864e5).getUTCDate() + '</span></th>'; });
+  if (ui.showHoras){ M.weeks.forEach(function(wk, k){ h += '<th class="hh' + (k === 0 ? " wk" : "") + '">S' + wk.i + '</th>'; }); h += '<th class="hh">Folgas</th>'; }
+  h += '</tr></thead><tbody>';
   var lastF = null;
   rows.forEach(function(r){
-    if (!ui.filtro && r.p.funcao !== lastF){ lastF = r.p.funcao; }
-    h += '<tr><td class="nm" title="' + esc(r.p.nome) + '">' + esc(r.p.nome) + '</td><td class="fn">' + esc(r.p.funcao) + '</td>';
+    if (r.p.funcao !== lastF){ lastF = r.p.funcao; h += '<tr class="grp"><td class="nm">' + esc(lastF) + '</td><td colspan="' + (cols - 1) + '"></td></tr>'; }
+    h += '<tr><td class="nm" title="' + esc(r.p.nome + " · " + r.p.funcao) + '">' + esc(r.p.nome) + '</td>';
     r.cells.forEach(function(c, j){ var d = M.days[j]; var wkc = (j === 0 || d.wd === 2) ? " wk" : "";
-      var label = c.v === "T" ? state.turno.codigo : "F";
-      h += '<td class="c ' + c.v + ' ' + c.cls.join(" ") + wkc + '" data-p="' + esc(r.p.id) + '" data-d="' + d.iso + '"' + (ui.editing && d.wd !== 1 ? ' tabindex="0" role="button" aria-label="' + esc(r.p.nome + " " + ddmm(d.n) + " " + label) + '"' : "") + '>' + label + '</td>'; });
-    r.hours.forEach(function(x, k){ h += '<td class="h' + (k === 0 ? " wk" : "") + (x > M.limite + 1e-6 ? " over" : "") + (x === 0 ? " zero" : "") + '">' + fmtH(x) + '</td>'; });
-    h += '<td class="h">' + r.folgas + '</td></tr>';
+      var label = c.v === "T" ? "" : (d.wd === 1 || M.shut[j] ? "X" : "F");
+      h += '<td class="c ' + c.v + ' ' + c.cls.join(" ") + wkc + '" data-p="' + esc(r.p.id) + '" data-d="' + d.iso + '"' + (ui.editing && d.wd !== 1 ? ' tabindex="0" role="button"' : '') + ' aria-label="' + esc(r.p.nome + " " + ddmm(d.n) + " " + (c.v === "T" ? "trabalha" : "folga")) + '">' + label + '</td>'; });
+    if (ui.showHoras){
+      r.hours.forEach(function(x, k){ h += '<td class="h' + (k === 0 ? " wk" : "") + (x > M.limite + 1e-6 ? " over" : "") + (x === 0 ? " zero" : "") + '">' + fmtH(x) + '</td>'; });
+      h += '<td class="h">' + r.folgas + '</td>';
+    }
+    h += '</tr>';
   });
-  h += '</tbody><tfoot>';
-  M.funcs.forEach(function(f){
-    if (ui.filtro && ui.filtro !== f) return;
-    h += '<tr><td class="nm">' + esc(f) + '</td><td class="fn">trabalhando</td>';
-    M.cover[f].forEach(function(x, j){ var d = M.days[j]; var wkc = (j === 0 || d.wd === 2) ? " wk" : ""; var closed = d.wd === 1 || M.shut[j]; h += '<td class="' + wkc + (!closed && x === 0 ? " low" : "") + '">' + (closed ? "" : x) + '</td>'; });
-    h += '<td colspan="' + (M.weeks.length + 1) + '"></td></tr>';
-  });
-  [["Garçom","Garçons de folga", M.offG],["Cumim","Cumins de folga", M.offC]].forEach(function(x){
-    if (M.funcs.indexOf(x[0]) < 0 || (ui.filtro && ui.filtro !== x[0])) return;
-    h += '<tr><td class="nm">' + x[1] + '</td><td class="fn">máx. 1</td>';
-    x[2].forEach(function(n, j){ var d = M.days[j]; var wkc = (j === 0 || d.wd === 2) ? " wk" : ""; h += '<td class="' + wkc + (n > 1 ? " warn" : "") + '">' + (n == null || M.shut[j] ? "" : n) + '</td>'; });
-    h += '<td colspan="' + (M.weeks.length + 1) + '"></td></tr>';
-  });
-  h += '</tfoot></table></div>';
-  h += '<aside class="panel"><h2>Alertas da escala</h2>';
-  if (!M.alerts.length) h += '<p class="muted">Nenhum alerta. Fim de semana coberto, folgas sem choque e horas dentro do limite.</p>';
-  else h += '<ul class="alerts">' + M.alerts.map(function(a){ return '<li class="' + a.t + '"><span>' + a.txt + '</span></li>'; }).join("") + '</ul>';
-  h += '<div class="rules"><p><b>5x2:</b> segunda é folga fixa (restaurante fechado) e cada um tem mais 1 folga entre terça e sexta, em rodízio.</p>' +
-       '<p><b>Fim de semana:</b> sábado e domingo ninguém folga.</p><p><b>Garçons e cumins:</b> no máximo 1 de cada de folga no mesmo dia.</p>' +
-       '<p><b>Limite:</b> ' + M.limite + 'h por semana (EC 141/2026, até 15/12/2027). A partir de 16/12/2027, 40h e turnos de 8h.</p>' +
-       '<p><b>Atenção legal:</b> 8h24 por dia só vale com acordo ou convenção coletiva durante a transição. Confirme com o contador.</p></div></aside></div>';
+  h += '</tbody>';
+  if (ui.showCob){
+    h += '<tfoot>';
+    M.funcs.forEach(function(f){
+      if (ui.filtro && ui.filtro !== f) return;
+      h += '<tr><td class="nm">' + esc(f) + ' no turno</td>';
+      M.cover[f].forEach(function(x, j){ var d = M.days[j]; var wkc = (j === 0 || d.wd === 2) ? " wk" : ""; var closed = d.wd === 1 || M.shut[j]; h += '<td class="' + wkc + (!closed && x === 0 ? " low" : "") + '">' + (closed ? "" : x) + '</td>'; });
+      if (ui.showHoras) h += '<td colspan="' + (M.weeks.length + 1) + '"></td>';
+      h += '</tr>';
+    });
+    [["Garçom","Garçons de folga (máx. 1)", M.offG],["Cumim","Cumins de folga (máx. 1)", M.offC]].forEach(function(x){
+      if (M.funcs.indexOf(x[0]) < 0 || (ui.filtro && ui.filtro !== x[0])) return;
+      h += '<tr><td class="nm">' + x[1] + '</td>';
+      x[2].forEach(function(n, j){ var d = M.days[j]; var wkc = (j === 0 || d.wd === 2) ? " wk" : ""; h += '<td class="' + wkc + (n > 1 ? " warn" : "") + '">' + (n == null || M.shut[j] ? "" : n) + '</td>'; });
+      if (ui.showHoras) h += '<td colspan="' + (M.weeks.length + 1) + '"></td>';
+      h += '</tr>';
+    });
+    h += '</tfoot>';
+  }
+  h += '</table></div>';
   v.innerHTML = h;
 }
 
@@ -503,7 +540,12 @@ function renderEquipe(){
 function renderConfig(){
   var v = document.getElementById("view-config"), ed = ui.editing;
   var nTrocas = Object.keys(state.trocas).filter(function(k){ var iso = k.split("|")[1]; var n = toN(iso); return n >= M.start && n <= M.end; }).length;
-  var h = '<div class="stack"><div class="panel"><h2>Mês da escala</h2><div class="formgrid">';
+  var h = '<div class="stack"><div class="panel"><h2>Regras da escala</h2><div class="rules" style="margin:0;padding:0;border:0">' +
+    '<p><b>5x2:</b> segunda é folga fixa (restaurante fechado) e cada um tem mais 1 folga entre terça e sexta, em rodízio.</p>' +
+    '<p><b>Fim de semana:</b> sábado e domingo ninguém folga.</p><p><b>Garçons e cumins:</b> no máximo 1 de cada de folga no mesmo dia.</p>' +
+    '<p><b>Limite:</b> ' + M.limite + 'h por semana (EC 141/2026, até 15/12/2027). A partir de 16/12/2027, 40h e turnos de 8h.</p>' +
+    '<p><b>Atenção legal:</b> 8h24 por dia só vale com acordo ou convenção coletiva durante a transição. Confirme com o contador.</p></div></div>' +
+    '<div class="panel"><h2>Mês da escala</h2><div class="formgrid">';
   h += '<div class="field"><label for="cfgInicio">Data inicial</label>' + (ed ? '<input type="date" id="cfgInicio" value="' + state.inicio + '">' : '<span class="ro">' + ddmmyyyy(M.start) + '</span>') + '<p class="hint">Troque todo mês (ex.: 16/01/2027). O fim, as semanas e o rodízio se ajustam sozinhos.</p></div>';
   h += '<div class="field"><label>Data final</label><span class="ro">' + ddmmyyyy(M.end) + '</span><p class="hint">Um mês depois, menos 1 dia.</p></div>';
   h += '<div class="field"><label>Início da 1ª semana</label><span class="ro">' + ddmmyyyy(M.b5) + ' (terça)</span><p class="hint">Semanas vão de terça a segunda.</p></div>';
@@ -567,6 +609,17 @@ document.addEventListener("click", function(e){
     case "btnEdit": ui.editing = !ui.editing; render(); return;
     case "btnDesc": state = JSON.parse(BASELINE); render(); toast("Alterações descartadas."); return;
     case "btnBaixar": baixar(); return;
+    case "btnSairGestor":
+      if (ui.editing && dirty()) saveLocal();
+      try { localStorage.removeItem("tp-admin"); } catch(x){}
+      ADMIN = false; ui.canEdit = false; ui.dl = false; ui.editing = false; ui.local = null;
+      state = JSON.parse(ORIGINAL); BASELINE = JSON.stringify(state);
+      try { history.replaceState(null, "", location.pathname + location.search); } catch(x){}
+      render(); toast("Modo gestor desligado neste navegador. Para voltar, abra o site com #editar no final do endereço.");
+      return;
+    case "tgHoras": ui.showHoras = !ui.showHoras; saveVis(); renderEscala(); return;
+    case "tgCob": ui.showCob = !ui.showCob; saveVis(); renderEscala(); return;
+    case "tgAl": ui.showAl = !ui.showAl; saveVis(); renderEscala(); return;
     case "btnVoltarArq":
       if (t.dataset.confirm === "1"){ try { localStorage.removeItem(LS_KEY); } catch(x){} state = JSON.parse(ORIGINAL); BASELINE = JSON.stringify(state); ui.local = null; ui.dia = null; render(); toast("Alterações locais apagadas. Mostrando a escala do arquivo."); }
       else { t.dataset.confirm = "1"; t.textContent = "Confirmar: apagar alterações locais"; }
@@ -607,6 +660,7 @@ document.addEventListener("change", function(e){
   else if (t.dataset.act === "funcao"){ p.funcao = t.value; render(); }
   else if (t.dataset.act === "folga"){ p.folgas = p.folgas || {}; if (t.value) p.folgas[t.dataset.w] = t.value; else delete p.folgas[t.dataset.w]; render(); }
 });
+window.addEventListener("hashchange", function(){ if (STANDALONE && (location.hash === "#editar" || location.hash === "#ver")) location.reload(); });
 window.addEventListener("beforeunload", function(e){ if (ui.editing && dirty() && !ui.saving){ e.preventDefault(); e.returnValue = ""; } });
 
 /* ---------- salvar: republica a página com o novo estado ---------- */
