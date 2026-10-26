@@ -145,6 +145,8 @@ th.hh{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);padding:0 6p
 .toolbar .legend{margin-left:auto}
 @media (max-width:900px){.toolbar .legend{margin-left:0}}
 .alertbox{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px}
+.pdfbox{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;font-size:13px}
+.pdfbox label{display:flex;gap:6px;align-items:center;color:var(--muted)}
 .grid th.d.monh .dn,.grid th.d.monh .dw{color:var(--muted);font-weight:400}
 /* rodapé / login gestor */
 .foot{padding-block:8px 28px;display:flex;justify-content:flex-end}
@@ -473,8 +475,18 @@ function renderEscala(){
   h += '<div class="toolbar"><label for="filtroFn" class="sr">Função</label><select id="filtroFn" aria-label="Função">' + opts + '</select>' +
        '<span class="chips"><button class="chip" id="tgHoras" aria-pressed="' + !!ui.showHoras + '">Horas</button>' +
        '<button class="chip" id="tgCob" aria-pressed="' + !!ui.showCob + '">Cobertura</button>' +
-       '<button class="chip' + (nGrave ? " danger" : (nAl ? " warn" : "")) + '" id="tgAl" aria-pressed="' + !!ui.showAl + '">Alertas' + (nAl ? ' <b>' + nAl + '</b>' : '') + '</button></span>' +
+       '<button class="chip' + (nGrave ? " danger" : (nAl ? " warn" : "")) + '" id="tgAl" aria-pressed="' + !!ui.showAl + '">Alertas' + (nAl ? ' <b>' + nAl + '</b>' : '') + '</button>' +
+       '<button class="chip" id="tgPdf" aria-pressed="' + !!ui.showPdf + '">Imprimir (PDF)</button></span>' +
        '<span class="legend"><span><i class="sw swx" style="background:var(--anil-soft);color:var(--anil)">F</i>Folga</span>' + (M.rows.some(function(r){ return r.p.dom15; }) ? '<span><i class="sw swx" style="background:var(--dom-soft);color:var(--dom);border-color:var(--dom)">F</i>Domingo (CLT, mulheres)</span>' : '') + '<span><i class="sw swx" style="background:var(--closed)">X</i>Fechado</span><span><i class="sw" style="background:var(--ochre-soft)"></i>Feriado</span><span class="muted">Em branco: trabalha ' + esc(state.turno.codigo) + ' (' + state.turno.entrada + '–' + state.turno.saida + ')</span></span></div>';
+  if (ui.showPdf){
+    initPdfRange();
+    h += '<div class="alertbox pdfbox"><b>Escala para o quadro de avisos</b>' +
+      '<label for="pdfDe">De <input type="date" id="pdfDe" value="' + ui.pdfDe + '"></label>' +
+      '<label for="pdfAte">até <input type="date" id="pdfAte" value="' + ui.pdfAte + '"></label>' +
+      '<button class="btn small ghost" id="pdfSem">Esta semana</button><button class="btn small ghost" id="pdfProx">Próxima semana</button>' +
+      '<button class="btn small primary" id="btnPdf"' + (ui.pdfBusy ? " disabled" : "") + '>' + (ui.pdfBusy ? "Gerando…" : "Baixar PDF") + '</button>' +
+      '<span class="muted">Semana de terça a segunda. Até 31 dias.</span></div>';
+  }
   if (ui.showAl){
     h += '<div class="alertbox">';
     if (!M.alerts.length) h += '<p class="muted" style="margin:0">Nenhum alerta. Fim de semana coberto, folgas sem choque e horas dentro do limite.</p>';
@@ -522,6 +534,96 @@ function renderEscala(){
   }
   h += '</table></div>';
   v.innerHTML = h;
+}
+
+/* ---------- PDF da escala para o quadro de avisos ---------- */
+function semanaDe(n){ var a = n - mod(wd(n) - 2, 7); return [toISO(a), toISO(a + 6)]; }
+function initPdfRange(){ if (!ui.pdfDe){ var w = semanaDe(toN(hoje())); ui.pdfDe = w[0]; ui.pdfAte = w[1]; } }
+function diaInfo(iso){
+  var ini = periodoDe(iso), mm = ini === state.inicio ? M : (cacheM[ini] || (cacheM[ini] = compute(ini)));
+  for (var j = 0; j < mm.days.length; j++) if (mm.days[j].iso === iso){
+    var by = {}; mm.rows.forEach(function(r){ by[r.p.id] = r.cells[j]; });
+    return { d:mm.days[j], shut:mm.shut[j], cells:by };
+  }
+  return null;
+}
+var libsPdf = null;
+function loadScript(src){ return new Promise(function(ok, fail){ var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = function(){ fail(new Error("load")); }; document.head.appendChild(s); }); }
+function carregarPdfLib(){
+  if (window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API.autoTable) return Promise.resolve();
+  if (!libsPdf) libsPdf = loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js")
+    .then(function(){ return loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"); })
+    .catch(function(e){ libsPdf = null; throw e; });
+  return libsPdf;
+}
+function gerarPdf(){
+  initPdfRange();
+  var a = toN(ui.pdfDe), b = toN(ui.pdfAte);
+  if (!(a <= b)){ toast("A data final precisa ser igual ou depois da inicial."); return; }
+  if (b - a > 30){ toast("Escolha no máximo 31 dias."); return; }
+  ui.pdfBusy = true; renderEscala();
+  carregarPdfLib().then(function(){
+    var jsPDF = window.jspdf.jsPDF, doc = new jsPDF({ orientation:"landscape", unit:"mm", format:"a4" });
+    var dias = []; for (var n = a; n <= b; n++){ var inf = diaInfo(toISO(n)); if (inf) dias.push(inf); }
+    var pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight();
+    doc.setFont("helvetica","bold"); doc.setFontSize(16); doc.setTextColor(28,28,30);
+    doc.text("Escala de trabalho - Restaurante Tio Pepe", 12, 15);
+    doc.setFont("helvetica","normal"); doc.setFontSize(11); doc.setTextColor(90,90,98);
+    doc.text(DIAS_LONGO[DIAS[wd(a)]] + ", " + ddmmyyyy(a) + "  a  " + DIAS_LONGO[DIAS[wd(b)]] + ", " + ddmmyyyy(b), 12, 22);
+    doc.setFontSize(9);
+    doc.text("Turno " + state.turno.codigo + ": " + state.turno.entrada + " as " + state.turno.saida + " (" + state.turno.intervalo + "h de intervalo)   |   F = folga   |   X = restaurante fechado   |   Em branco = trabalha", 12, 28);
+    var head = [["Colaborador"].concat(dias.map(function(x){ return x.d.dn + "\n" + ddmm(x.d.n) + (x.d.fer ? "\nFeriado" : ""); }))];
+    var body = [], meta = [], lastF = null;
+    M.rows.forEach(function(r){
+      if (r.p.funcao !== lastF){ lastF = r.p.funcao; body.push([{ content:lastF.toUpperCase(), colSpan:dias.length + 1 }]); meta.push(null); }
+      body.push([r.p.nome].concat(dias.map(function(x){ var c = x.cells[r.p.id]; if (!c || c.v === "T") return ""; return (x.d.wd === 1 || x.shut) ? "X" : "F"; })));
+      meta.push(r.p.id);
+    });
+    var fs = dias.length > 16 ? 6.5 : (dias.length > 9 ? 8 : 9.5);
+    doc.autoTable({
+      head: head, body: body, startY: 31, theme: "grid", margin: { left:12, right:12 },
+      styles: { font:"helvetica", fontSize:fs, halign:"center", valign:"middle", cellPadding: dias.length > 16 ? 0.6 : 1.05, lineColor:[220,220,224], lineWidth:0.2, textColor:[28,28,30] },
+      headStyles: { fillColor:[245,245,246], textColor:[28,28,30], fontStyle:"bold" },
+      columnStyles: { 0: { halign:"left", cellWidth: dias.length > 16 ? 32 : 42, fontStyle:"normal" } },
+      didParseCell: function(dt){
+        var col = dt.column.index - 1, x = dias[col];
+        if (dt.section === "head"){ if (x && x.d.fer){ dt.cell.styles.fillColor = [251,238,214]; dt.cell.styles.textColor = [154,100,16]; } if (dt.column.index === 0) dt.cell.styles.halign = "left"; return; }
+        var pid = meta[dt.row.index];
+        if (pid === null){ dt.cell.styles.fillColor = [255,255,255]; dt.cell.styles.textColor = [107,107,114]; dt.cell.styles.fontSize = fs - 2; dt.cell.styles.cellPadding = { top:1.4, bottom:0.3, left:1.5, right:1 }; dt.cell.styles.halign = "left"; dt.cell.styles.fontStyle = "bold"; return; }
+        if (!x) return;
+        var c = x.cells[pid];
+        if (x.d.wd === 1 || x.shut){ dt.cell.styles.fillColor = [238,238,240]; dt.cell.styles.textColor = [120,120,126]; return; }
+        if (c && c.v === "F"){
+          dt.cell.styles.fontStyle = "bold";
+          if (c.cls.indexOf("dom") >= 0){ dt.cell.styles.fillColor = [214,243,230]; dt.cell.styles.textColor = [11,122,85]; }
+          else { dt.cell.styles.fillColor = [226,232,248]; dt.cell.styles.textColor = [35,64,158]; }
+        } else if (x.d.fer){ dt.cell.styles.fillColor = [253,247,236]; }
+      }
+    });
+    /* quem folga em cada dia */
+    var linhas = dias.filter(function(x){ return !(x.d.wd === 1 || x.shut); }).map(function(x){
+      var off = M.rows.filter(function(r){ var c = x.cells[r.p.id]; return c && c.v === "F"; }).map(function(r){ return r.p.nome + " (" + r.p.funcao + ")"; });
+      return [x.d.dn + " " + ddmm(x.d.n) + (x.d.fer ? " - " + x.d.fer : ""), off.length ? off.join(", ") : "Ninguém de folga"];
+    });
+    var fechados = dias.filter(function(x){ return x.d.wd === 1 || x.shut; }).map(function(x){ return x.d.dn + " " + ddmm(x.d.n); });
+    var y = doc.lastAutoTable.finalY + 7;
+    if (y > ph - 30){ doc.addPage(); y = 16; }
+    doc.setFont("helvetica","bold"); doc.setFontSize(11); doc.setTextColor(28,28,30); doc.text("Quem folga em cada dia", 12, y);
+    doc.autoTable({
+      body: linhas, startY: y + 2, theme: "plain", margin: { left:12, right:12 },
+      styles: { font:"helvetica", fontSize:9, cellPadding:1.2, textColor:[28,28,30] },
+      columnStyles: { 0: { fontStyle:"bold", cellWidth:46 } }
+    });
+    if (fechados.length){ var y2 = doc.lastAutoTable.finalY + 4; if (y2 > ph - 14){ doc.addPage(); y2 = 16; } doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(90,90,98); doc.text("Restaurante fechado: " + fechados.join(", ") + ".", 12, y2); }
+    var tp = doc.internal.getNumberOfPages();
+    for (var i = 1; i <= tp; i++){ doc.setPage(i); doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(140,140,146);
+      doc.text("Gerado em " + new Date().toLocaleString("pt-BR",{ timeZone:"America/Sao_Paulo" }).slice(0,17) + (tp > 1 ? "   |   página " + i + " de " + tp : ""), 12, ph - 7); }
+    var nome = "escala_" + ui.pdfDe.split("-").reverse().join("-") + "_a_" + ui.pdfAte.split("-").reverse().join("-") + ".pdf";
+    ui.pdfBusy = false; renderEscala();
+    if (STANDALONE){ doc.save(nome); toast("PDF baixado: " + nome); return; }
+    if (!downloadsNS){ toast("Baixar não está disponível nesta visualização."); return; }
+    downloadsNS.save({ filename:nome, data: doc.output("blob") }).then(function(){ toast("PDF pronto para imprimir."); }, function(err){ var c = err && err.code; if (c !== "declined") toast("Não foi possível baixar o PDF aqui."); });
+  }).catch(function(){ ui.pdfBusy = false; renderEscala(); toast("Não foi possível carregar o gerador de PDF. Verifique a internet e tente de novo."); });
 }
 
 function renderDia(){
@@ -684,6 +786,10 @@ document.addEventListener("click", function(e){
     case "tgHoras": ui.showHoras = !ui.showHoras; saveVis(); renderEscala(); return;
     case "tgCob": ui.showCob = !ui.showCob; saveVis(); renderEscala(); return;
     case "tgAl": ui.showAl = !ui.showAl; saveVis(); renderEscala(); return;
+    case "tgPdf": ui.showPdf = !ui.showPdf; renderEscala(); return;
+    case "pdfSem": var w1 = semanaDe(toN(hoje())); ui.pdfDe = w1[0]; ui.pdfAte = w1[1]; renderEscala(); return;
+    case "pdfProx": var w2 = semanaDe(toN(ui.pdfDe || hoje()) + 7); ui.pdfDe = w2[0]; ui.pdfAte = w2[1]; renderEscala(); return;
+    case "btnPdf": gerarPdf(); return;
     case "btnVoltarArq":
       if (t.dataset.confirm === "1"){ try { localStorage.removeItem(LS_KEY); } catch(x){} state = JSON.parse(ORIGINAL); BASELINE = JSON.stringify(state); ui.local = null; ui.dia = null; render(); toast("Alterações locais apagadas. Mostrando a escala do arquivo."); }
       else { t.dataset.confirm = "1"; t.textContent = "Confirmar: apagar alterações locais"; }
@@ -722,6 +828,8 @@ document.addEventListener("change", function(e){
   var t = e.target;
   if (t.id === "filtroFn"){ ui.filtro = t.value; try { localStorage.setItem("tp-filtro", ui.filtro); } catch(x){} renderEscala(); return; }
   if (t.id === "diaSel"){ ui.dia = t.value; renderDia(); return; }
+  if (t.id === "pdfDe" && t.value){ ui.pdfDe = t.value; if (ui.pdfAte < ui.pdfDe) ui.pdfAte = toISO(toN(t.value) + 6); renderEscala(); return; }
+  if (t.id === "pdfAte" && t.value){ ui.pdfAte = t.value; return; }
   if (!ui.editing) return;
   if (t.id === "cfgInicio" && t.value){ state.inicio = t.value; ui.dia = null; render(); return; }
   if (t.id === "cfgLimite"){ state.limite = +t.value || 42; render(); return; }
